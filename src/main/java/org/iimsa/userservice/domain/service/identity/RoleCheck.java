@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import org.iimsa.userservice.domain.model.UserRole;
 
-public interface UserRoleCheck {
+public interface RoleCheck {
     boolean hasRole(UserRole role);
 
     boolean hasRole(List<UserRole> types);

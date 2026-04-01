@@ -1,63 +1,63 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.12'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.12'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'org.iimsa'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 ext {
-	set('springCloudVersion', "2025.0.1")
+    set('springCloudVersion', "2025.0.1")
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 
-	maven {
-		name = "GitHubPackages"
-		url = uri("https://maven.pkg.github.com/apangmsa/common-module")
-		credentials {
-			username = System.getenv("GPR_USER")
-			password = System.getenv("GPR_TOKEN")
-		}
-	}
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/apangmsa/common-module")
+        credentials {
+            username = System.getenv("GPR_USER")
+            password = System.getenv("GPR_TOKEN")
+        }
+    }
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 dependencies {
-	implementation 'com.iimsa:common:1.0-SNAPSHOT'
+    implementation 'com.iimsa:common:1.0-SNAPSHOT'
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation "org.keycloak:keycloak-admin-client:26.0.8"
-	implementation 'org.jboss.resteasy:resteasy-jackson2-provider'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation "org.keycloak:keycloak-admin-client:26.0.8" // 회원정보 생성, 수정, 변경 기능 제공
+    implementation 'org.jboss.resteasy:resteasy-jackson2-provider'
 
-	// Querydsl APT
-	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+    // Querydsl APT
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
 
-	// Querydsl JPA
-	runtimeOnly 'org.postgresql:postgresql'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // Querydsl JPA
+    runtimeOnly 'org.postgresql:postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-	testRuntimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
