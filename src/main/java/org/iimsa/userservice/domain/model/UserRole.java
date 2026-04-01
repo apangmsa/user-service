@@ -1,4 +1,4 @@
-package org.iimsa.userservice.domain.vo;
+package org.iimsa.userservice.domain.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

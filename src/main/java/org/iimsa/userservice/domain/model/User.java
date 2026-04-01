@@ -1,4 +1,4 @@
-package org.iimsa.userservice.domain;
+package org.iimsa.userservice.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -8,15 +8,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.UUID;
-import org.iimsa.common.domain.BaseUserEntity;
-import org.iimsa.userservice.domain.vo.DeliveryManager;
-import org.iimsa.userservice.domain.vo.UserRole;
-import org.iimsa.userservice.domain.vo.UserStatus;
+import lombok.Getter;
+import org.iimsa.common.domain.BaseEntity;
 
-
+@Getter
 @Entity
 @Table(name = "p_user")
-public class User extends BaseUserEntity {
+public class User extends BaseEntity {
     @Id
     @Column(name = "id")
     private UUID id;

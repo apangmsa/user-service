@@ -1,4 +1,4 @@
-package org.iimsa.userservice.domain.vo;
+package org.iimsa.userservice.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
