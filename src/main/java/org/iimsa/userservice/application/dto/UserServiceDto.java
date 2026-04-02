@@ -18,7 +18,7 @@ public class UserServiceDto {
         private final UserRole role;
 
         private final UUID hubId;
-        private final UUID storeId;
+        private final UUID companyId;
 
         private final String email;
         private final String slackId;

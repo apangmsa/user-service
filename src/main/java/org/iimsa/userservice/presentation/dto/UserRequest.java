@@ -1,6 +1,7 @@
 package org.iimsa.userservice.presentation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -29,7 +30,7 @@ public class UserRequest {
                 message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.")
         private String password;
 
-        @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY, STORE_MANAGER, STORE_DELIVERY)",
+        @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY_MANAGER, STORE_MANAGER, COMPANY_DELIVERY_MANAGER)",
                 example = "STORE_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
 
         @NotBlank(message = "사용자 타입은 필수 항목입니다.")
@@ -43,7 +44,7 @@ public class UserRequest {
 
         @Schema(description = "소속 업체 ID (업체 담당자 필수)", example = "660f8400-f29b-51d4-b716-556655440111",
                 requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        private UUID storeId;
+        private UUID companyId;
 
         @Schema(description = "이메일 주소", example = "yonggyo@spartahub.com", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "이메일은 필수 입력 항목입니다.")
@@ -61,10 +62,28 @@ public class UserRequest {
                     .password(password)
                     .role(UserRole.valueOf(this.role.toUpperCase()))
                     .hubId(hubId)
-                    .storeId(storeId)
+                    .companyId(companyId)
                     .email(email)
                     .slackId(slackId)
                     .build();
         }
+
+        @AssertTrue(message = "허브 배송 담당자는 hubId가 필수입니다.")
+        public boolean isValidHubId() {
+            if (UserRole.HUB_DELIVERY_MANAGER.name().equals(role)) {
+                return hubId != null;
+            }
+            return true;
+        }
+
+        @AssertTrue(message = "업체 담당자는 companyId와 hubId가 필수입니다.")
+        public boolean isValidStoreId() {
+            if (UserRole.COMPANY_MANAGER.name().equals(role)) {
+                return companyId != null && hubId != null;
+            }
+            return true;
+        }
+
+
     }
 }
