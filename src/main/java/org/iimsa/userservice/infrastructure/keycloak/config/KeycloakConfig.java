@@ -1,6 +1,8 @@
 package org.iimsa.userservice.infrastructure.keycloak.config;
 
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -22,8 +24,12 @@ public class KeycloakConfig {
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(properties.clientId())
                 .clientSecret(properties.clientSecret())
-                .username(properties.adminUsername())
-                .password(properties.adminPassword())
+                .resteasyClient(
+                        new ResteasyClientBuilderImpl()
+                                .connectTimeout(5, TimeUnit.SECONDS)
+                                .readTimeout(10, TimeUnit.SECONDS)
+                                .build()
+                )
                 .build();
     }
 }
