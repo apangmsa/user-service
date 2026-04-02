@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 import org.iimsa.common.domain.BaseEntity;
 import org.iimsa.common.exception.BadRequestException;
 import org.iimsa.common.exception.ForbiddenException;
+import org.iimsa.userservice.domain.exception.InvalidEmailException;
+import org.iimsa.userservice.domain.exception.InvalidPasswordException;
 import org.iimsa.userservice.domain.service.identity.IdentityProvider;
 import org.iimsa.userservice.domain.service.identity.RoleCheck;
 import org.springframework.util.StringUtils;
@@ -82,6 +84,20 @@ public class User extends BaseEntity {
         return builder.build();
     }
 
+    // 유효성 검사
+    private static void validatePassword(String password) {
+        if (!StringUtils.hasText(password) || !password.matches(PASSWORD_REGEX)) {
+            throw new InvalidPasswordException("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.");
+        }
+    }
+
+    // 배송기사 순번 할당
+
+    private static void validateEmail(String email) {
+        if (!StringUtils.hasText(email) || !email.matches(EMAIL_REGEX)) {
+            throw new InvalidEmailException("이메일 형식이 올바르지 않습니다.");
+        }
+    }
 
     public void changePassword(String password, RoleCheck roleCheck, IdentityProvider identityProvider) {
         // 권한 체크
@@ -94,8 +110,6 @@ public class User extends BaseEntity {
         identityProvider.changePassword(id, password);
     }
 
-    // 배송기사 순번 할당
-
     public void assignDeliverySequence(int sequence) {
 
         if (this.deliveryManager == null) {
@@ -105,22 +119,4 @@ public class User extends BaseEntity {
         this.deliveryManager.assignSequence(sequence);
     }
 
-    // 유효성 검사
-    private static void validatePassword(String password) {
-        if (!StringUtils.hasText(password) || !password.matches(PASSWORD_REGEX)) {
-            throw new BadRequestException("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.");
-        }
-    }
-
-    private static void validateEmail(String email) {
-        if (!StringUtils.hasText(email) || !email.matches(EMAIL_REGEX)) {
-            throw new BadRequestException("이메일 형식이 올바르지 않습니다.");
-        }
-    }
-
-    private static void validateUsername(String loginId) {
-        if (loginId == null || !loginId.matches(LOGIN_ID_REGEX)) {
-            throw new BadRequestException("사용자명은 4~10자의 알파벳 소문자와 숫자로만 구성되어야 합니다.");
-        }
-    }
 }
