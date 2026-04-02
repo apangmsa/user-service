@@ -43,4 +43,7 @@ public class DeliveryManager {
                 || role == UserRole.COMPANY_DELIVERY_MANAGER;
     }
 
+    public void assignSequence(int sequence) {
+        this.deliverySequence = sequence;
+    }
 }

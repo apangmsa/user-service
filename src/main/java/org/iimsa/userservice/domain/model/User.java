@@ -61,14 +61,17 @@ public class User extends BaseEntity {
 
     // User 엔티티 내부
     public static User create(UUID id, String username, String email, UserRole role, UUID hubId) {
-        // 1. 파라미터 검증 (null? 제약사항)
-        // 이메일 ..
+        validateEmail(email);
+
         UserBuilder builder = User.builder()
                 .id(id)
                 .username(username)
                 .email(email)
                 .userRole(role);
         if (role == UserRole.HUB_DELIVERY_MANAGER) {
+            if (hubId == null) {
+                throw new BadRequestException("허브 배송 담당자는 hubId가 필요합니다.");
+            }
             // 배송 매니저라면 객체를 임시로 생성해서 넣어줌 (내부에서 hubId null 체크 수행) sequence의 경우 승인시 결정
             builder.deliveryManager(DeliveryManager.create(role, hubId));
         } else {
@@ -79,34 +82,6 @@ public class User extends BaseEntity {
         return builder.build();
     }
 
-    /**
-     * 1. 허브 배송 담당자
-     */
-    public static User createHubDeliveryManager(UUID id, String username, UUID hubId, int sequence) {
-        return User.builder()
-                .id(id)
-                .username(username)
-                .userRole(UserRole.HUB_DELIVERY_MANAGER)
-                .build();
-    }
-
-    /**
-     * 2. 일반 유저 또는 관리자 생성 (배송 정보가 없는 경우)
-     */
-    public static User createGeneralUser(UUID id, String username, String email, UserRole role) {
-        // 배송 담당자 권한을 이 메서드로 만들려고 하면 예외 처리 (방어 코드)
-        if (role == UserRole.HUB_DELIVERY_MANAGER || role == UserRole.COMPANY_DELIVERY_MANAGER) {
-            throw new IllegalArgumentException("배송 담당자는 전용 생성 메서드를 사용해야 합니다.");
-        }
-
-        return User.builder()
-                .id(id)
-                .username(username)
-                .email(email)
-                .userRole(role)
-                .deliveryManager(null) // 배송 정보 없음
-                .build();
-    }
 
     public void changePassword(String password, RoleCheck roleCheck, IdentityProvider identityProvider) {
         // 권한 체크
@@ -119,10 +94,27 @@ public class User extends BaseEntity {
         identityProvider.changePassword(id, password);
     }
 
-    // 비밀번호 유효성 검사
+    // 배송기사 순번 할당
+
+    public void assignDeliverySequence(int sequence) {
+
+        if (this.deliveryManager == null) {
+            throw new ForbiddenException("배송 담당자가 아닙니다.");
+        }
+
+        this.deliveryManager.assignSequence(sequence);
+    }
+
+    // 유효성 검사
     private static void validatePassword(String password) {
         if (!StringUtils.hasText(password) || !password.matches(PASSWORD_REGEX)) {
             throw new BadRequestException("비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.");
+        }
+    }
+
+    private static void validateEmail(String email) {
+        if (!StringUtils.hasText(email) || !email.matches(EMAIL_REGEX)) {
+            throw new BadRequestException("이메일 형식이 올바르지 않습니다.");
         }
     }
 
@@ -131,5 +123,4 @@ public class User extends BaseEntity {
             throw new BadRequestException("사용자명은 4~10자의 알파벳 소문자와 숫자로만 구성되어야 합니다.");
         }
     }
-
 }
