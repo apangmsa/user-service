@@ -5,6 +5,6 @@ import org.iimsa.common.exception.NotFoundException;
 
 public class HubNotFoundException extends NotFoundException {
     public HubNotFoundException(UUID hubId) {
-        super("등록되지 않은 허브 정보입니다. HUB ID: " + hubId.toString());
+        super("등록되지 않은 허브 정보입니다. HUB ID: " + hubId);
     }
 }
