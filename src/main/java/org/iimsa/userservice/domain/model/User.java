@@ -85,7 +85,7 @@ public class User extends BaseEntity {
 
     public void changePassword(String password, RoleCheck roleCheck, IdentityProvider identityProvider) {
         // 권한 체크
-        if (roleCheck.hasRole(MASTER) && !roleCheck.isMine(this.id)) {
+        if (!roleCheck.hasRole(MASTER) && !roleCheck.isMine(this.id)) {
             throw new ForbiddenException("비밀번호를 변경할 권한이 없습니다.");
         }
         validatePassword(password);
