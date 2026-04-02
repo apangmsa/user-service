@@ -13,11 +13,14 @@ public record UserDeletedPayload(
         String deletedBy
 ) {
     public static UserDeletedPayload from(User user) {
+        Integer deliverySequence = user.getDeliveryManager() == null
+                ? null
+                : user.getDeliveryManager().getDeliverySequence();
         return new UserDeletedPayload(
                 user.getId(),
                 user.getUsername(),
                 user.getUserRole().toString(),
-                user.getDeliveryManager().getDeliverySequence(),
+                deliverySequence,
                 user.getDeletedAt(),
                 user.getDeletedBy()
         );
