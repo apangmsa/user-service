@@ -12,11 +12,13 @@ import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@RestController("/api/v1/users")
+@RestController
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "사용자 API", description = "사용자 계정 생성 및 관리 API")
 public class UserController {
