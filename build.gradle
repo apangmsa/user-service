@@ -22,7 +22,7 @@ repositories {
 
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/apangmsa/common-module")
+        url = uri("https://maven.pkg.github.com/yonggyo1125/spartahub-common")
         credentials {
             username = System.getenv("GPR_USER")
             password = System.getenv("GPR_TOKEN")
@@ -37,12 +37,9 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'com.iimsa:common:1.0-SNAPSHOT'
+    implementation 'com.iimsa:common2:1.2-SNAPSHOT'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation "org.keycloak:keycloak-admin-client:26.0.8" // 회원정보 생성, 수정, 변경 기능 제공
-    implementation 'org.jboss.resteasy:resteasy-jackson2-provider'
+    // ...
 
     // Querydsl APT
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
