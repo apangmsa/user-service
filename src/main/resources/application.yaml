@@ -26,14 +26,14 @@ spring:
         jwt:
           issuer-uri: "https://keycloak.code-factory.co.kr/realms/codefactory"
 
-  # 키클록 설정
-  keycloak:
-    server-url: "https://keycloak.code-factory.co.kr"
-    realm: ${KEYCLOAK_REALM}
-    client-id: ${KEYCLOAK_CLIENT_ID}
-    client-secret: ${KEYCLOAK_CLIENT_SECRET}
-    admin-username: ${KEYCLOAK_ADMIN_USERNAME}
-    admin-password: ${KEYCLOAK_ADMIN_PASSWORD}
+# 키클록 설정
+keycloak:
+  server-url: "https://keycloak.code-factory.co.kr"
+  realm: ${KEYCLOAK_REALM}
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD}
 
 eureka:
   instance:

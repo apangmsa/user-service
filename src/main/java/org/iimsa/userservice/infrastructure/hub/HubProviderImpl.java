@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.iimsa.userservice.domain.service.hubdeliverymanager.HubData;
 import org.iimsa.userservice.domain.service.hubdeliverymanager.HubProvider;
 import org.iimsa.userservice.infrastructure.hub.client.HubClient;
-import org.iimsa.userservice.infrastructure.hub.client.dto.HubResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +15,9 @@ public class HubProviderImpl implements HubProvider {
 
     @Override
     public HubData get(UUID hubId) {
-        HubResponse res = client.getHub(hubId);
-        return res == null || res.id() == null ? null : new HubData(res.name(), res.address());
+        // TODO: 허브 서비스 연결
+        // HubResponse res = client.getHub(hubId);
+        // return res == null || res.id() == null ? null : new HubData(res.name(), res.address());
+        return null;
     }
 }
