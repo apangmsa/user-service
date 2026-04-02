@@ -2,12 +2,14 @@ package org.iimsa.userservice.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.ws.rs.ForbiddenException;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.iimsa.common.exception.BadRequestException;
 
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,14 +24,12 @@ public class DeliveryManager {
 
     public static DeliveryManager create(UserRole role, UUID hubId) {
         if (!isDeliveryManager(role)) {
-            // TODO: Exception
-            throw new IllegalArgumentException("배송 담당자만 DeliveryManager를 가질 수 있습니다.");
+            throw new ForbiddenException("배송 담당자만 DeliveryManager를 가질 수 있습니다.");
         }
 
         if (role == UserRole.HUB_DELIVERY_MANAGER) {
             if (hubId == null) {
-                // TODO: Exception
-                throw new IllegalArgumentException("허브 배송 담당자는 hubId가 필수입니다.");
+                throw new BadRequestException("허브 배송 담당자는 hubId가 필수입니다.");
             }
         }
 
