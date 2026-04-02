@@ -33,6 +33,7 @@ public class UserService {
                     userId,
                     data.getName(),
                     data.getEmail(),
+                    data.getSlackId(),
                     data.getRole(),
                     data.getHubId()
             );

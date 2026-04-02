@@ -13,7 +13,7 @@ import org.iimsa.userservice.domain.model.UserRole;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRequest {
-    public static final String PASSWORD_REGEXP = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s\\S]{8,20}$";
+    public static final String PASSWORD_REGEXP = "^(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s\\S]{8,20}$";
 
     @Data
     @Schema(description = "회원가입 요청 데이터")
@@ -31,7 +31,10 @@ public class UserRequest {
 
         @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY, STORE_MANAGER, STORE_DELIVERY)",
                 example = "STORE_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
+
         @NotBlank(message = "사용자 타입은 필수 항목입니다.")
+        @Pattern(regexp = "MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|STORE_MANAGER|COMPANY_DELIVERY_MANAGER",
+                message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|STORE_MANAGER|COMPANY_DELIVERY_MANAGER")
         private String role;
 
         @Schema(description = "소속 허브 ID (업체 담당자/배송 담당자 필수)", example = "550e8400-e29b-41d4-a716-446655440000",

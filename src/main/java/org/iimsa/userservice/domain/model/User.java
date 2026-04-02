@@ -16,10 +16,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.iimsa.common.domain.BaseEntity;
-import org.iimsa.common.exception.BadRequestException;
 import org.iimsa.common.exception.ForbiddenException;
 import org.iimsa.userservice.domain.exception.InvalidEmailException;
 import org.iimsa.userservice.domain.exception.InvalidPasswordException;
+import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.iimsa.userservice.domain.service.identity.IdentityProvider;
 import org.iimsa.userservice.domain.service.identity.RoleCheck;
 import org.springframework.util.StringUtils;
@@ -32,7 +32,8 @@ import org.springframework.util.StringUtils;
 @Table(name = "p_user")
 public class User extends BaseEntity {
 
-    private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s\\S]{8,20}$";
+    private static final String PASSWORD_REGEX =
+            "^(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s\\S]{8,20}$";
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
     private static final String LOGIN_ID_REGEX = "^[a-z0-9]{4,10}$";
 
@@ -62,17 +63,18 @@ public class User extends BaseEntity {
 
 
     // User 엔티티 내부
-    public static User create(UUID id, String username, String email, UserRole role, UUID hubId) {
+    public static User create(UUID id, String username, String email, String slackId, UserRole role, UUID hubId) {
         validateEmail(email);
 
         UserBuilder builder = User.builder()
                 .id(id)
                 .username(username)
                 .email(email)
+                .slackId(slackId)
                 .userRole(role);
         if (role == UserRole.HUB_DELIVERY_MANAGER) {
             if (hubId == null) {
-                throw new BadRequestException("허브 배송 담당자는 hubId가 필요합니다.");
+                throw new InvalidUserException("허브 배송 담당자는 hubId가 필요합니다.");
             }
             // 배송 매니저라면 객체를 임시로 생성해서 넣어줌 (내부에서 hubId null 체크 수행) sequence의 경우 승인시 결정
             builder.deliveryManager(DeliveryManager.create(role, hubId));
