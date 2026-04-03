@@ -24,9 +24,6 @@ public class UserService {
 
     @Transactional
     public UUID signUp(UserServiceDto.SignUp data) {
-        // hub 검증
-        hubProvider.get(data.getHubId());
-
         UUID userId = identityProvider.register(data.getEmail(), data.getPassword());
         try {
             User user = User.create(
@@ -34,8 +31,7 @@ public class UserService {
                     data.getName(),
                     data.getEmail(),
                     data.getSlackId(),
-                    data.getRole(),
-                    data.getHubId()
+                    data.getRole()
             );
             return userRepository.save(user).getId();
         } catch (Exception e) {

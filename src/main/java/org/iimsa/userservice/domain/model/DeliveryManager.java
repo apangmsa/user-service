@@ -16,7 +16,7 @@ public class DeliveryManager {
     @Column(name = "hub_id")
     private UUID hubId; // 각 허브 별로 10명의 업체 배송 담당자가 있습니다. 허브 배송 담당자는 물류 시스템 전체에서 총 10명이 존재합니다.
 
-    @Column(name = "delivery_sequence", nullable = false)
+    @Column(name = "delivery_sequence")
     private int sequence; // 순차 배정을 위한 번호
 
     // 생성자에서 비즈니스 로직에 따른 필드 강제화
@@ -38,6 +38,6 @@ public class DeliveryManager {
             return new DeliveryManager(null, sequence);
         }
 
-        return null;
+        throw new InvalidUserException("배송 담당자가 아닌 역할입니다.");
     }
 }

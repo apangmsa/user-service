@@ -62,7 +62,7 @@ public class User extends BaseEntity {
 
 
     // User 엔티티 내부
-    public static User create(UUID id, String username, String email, String slackId, UserRole role, UUID hubId) {
+    public static User create(UUID id, String username, String email, String slackId, UserRole role) {
         validateEmail(email);
 
         UserBuilder builder = User.builder()
