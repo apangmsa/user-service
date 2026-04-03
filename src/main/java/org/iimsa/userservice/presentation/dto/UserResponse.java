@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.iimsa.userservice.domain.model.UserRole;
+import org.iimsa.userservice.domain.model.UserStatus;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponse {
@@ -39,9 +40,10 @@ public class UserResponse {
         @Schema(description = "배송 순번")
         private Integer deliveryRotationOrder;
         @Schema(description = "소속 업체 ID")
-        private UUID storeId;
+        private UUID companyId;
         @Schema(description = "소속 업체명")
-        private String storeName;
-        private boolean enabled;
+        private String companyName;
+        @Schema(description = "사용자 승인 상태 (PENDING, APPROVED, REJECTED)")
+        private UserStatus status;
     }
 }

@@ -30,12 +30,12 @@ public class UserRequest {
                 message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.")
         private String password;
 
-        @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY_MANAGER, STORE_MANAGER, COMPANY_DELIVERY_MANAGER)",
-                example = "STORE_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY_MANAGER, COMPANY_MANAGER, COMPANY_DELIVERY_MANAGER)",
+                example = "COMPANY_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
 
         @NotBlank(message = "사용자 타입은 필수 항목입니다.")
-        @Pattern(regexp = "MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|STORE_MANAGER|COMPANY_DELIVERY_MANAGER",
-                message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|STORE_MANAGER|COMPANY_DELIVERY_MANAGER")
+        @Pattern(regexp = "MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER",
+                message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER")
         private String role;
 
         @Schema(description = "소속 허브 ID (업체 담당자/배송 담당자 필수)", example = "550e8400-e29b-41d4-a716-446655440000",
@@ -77,7 +77,7 @@ public class UserRequest {
         }
 
         @AssertTrue(message = "업체 담당자는 companyId와 hubId가 필수입니다.")
-        public boolean isValidStoreId() {
+        public boolean isValidCOMPANYId() {
             if (UserRole.COMPANY_MANAGER.name().equals(role)) {
                 return companyId != null && hubId != null;
             }
