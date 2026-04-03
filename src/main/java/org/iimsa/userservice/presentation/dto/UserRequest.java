@@ -51,7 +51,7 @@ public class UserRequest {
         @Email(message = "유효한 이메일 형식이 아닙니다.")
         private String email;
 
-        @Schema(description = "슬랙 ID", example = "U12345678", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "슬랙 ID", example = "example@email.com", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "슬랙 ID는 알림 수신을 위해 필수입니다.")
         private String slackId;
 

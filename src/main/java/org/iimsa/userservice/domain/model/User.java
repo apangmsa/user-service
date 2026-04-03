@@ -19,6 +19,7 @@ import org.iimsa.common.domain.BaseEntity;
 import org.iimsa.userservice.domain.exception.CannotPromoteToDeliveryManagerException;
 import org.iimsa.userservice.domain.exception.InvalidEmailException;
 import org.iimsa.userservice.domain.exception.InvalidPasswordException;
+import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.iimsa.userservice.domain.exception.UnauthorizedPasswordChangeException;
 import org.iimsa.userservice.domain.service.identity.RoleCheck;
 import org.springframework.util.StringUtils;
@@ -49,7 +50,7 @@ public class User extends BaseEntity {
     @Column(length = 100, name = "slack_id")
     private String slackId;
 
-    @Column(length = 20, nullable = false, name = "role")
+    @Column(length = 25, nullable = false, name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
@@ -75,6 +76,18 @@ public class User extends BaseEntity {
 
         return builder.build();
     }
+
+    // 업체 담당자 생성
+    public static User createCompanyManager(UUID id, String username, String email, UUID companyId) {
+        if (companyId == null) {
+            throw new InvalidUserException("업체 담당자는 업체ID가 필수입니다.");
+        }
+        UserBuilder builder =
+                // 로직
+                .deliveryManager(null); // 승인 단계에서 넣어줌
+        return builder.build();
+    }
+
 
     // ===================유효성 검사
     private static void validatePassword(String password) {
