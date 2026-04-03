@@ -29,7 +29,7 @@ public class UserController {
             summary = "신규 회원가입",
             description = "사용자 정보를 입력받아 시스템 사용자를 등록하고 외부 인증 서버(Keycloak)에 계정을 생성합니다."
     )
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse.SignUp signUp(@RequestBody @Valid UserRequest.SignUp request) {
         UUID userId = userService.signUp(request.toDto());
