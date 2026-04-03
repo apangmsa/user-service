@@ -9,4 +9,3 @@ public interface UserRepository {
 
     Optional<User> findById(UUID id);
 }
-
