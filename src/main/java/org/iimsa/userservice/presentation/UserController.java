@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.iimsa.common.response.CommonResponse;
 import org.iimsa.userservice.application.UserService;
 import org.iimsa.userservice.presentation.dto.UserRequest;
 import org.iimsa.userservice.presentation.dto.UserResponse;
@@ -31,10 +32,10 @@ public class UserController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse.SignUp signUp(@RequestBody @Valid UserRequest.SignUp request) {
+    public CommonResponse<UserResponse.SignUp> signUp(@RequestBody @Valid UserRequest.SignUp request) {
         UUID userId = userService.signUp(request.toDto());
-
-        return new UserResponse.SignUp(userId);
+        UserResponse.SignUp responseData = new UserResponse.SignUp(userId);
+        return CommonResponse.success("회원가입이 완료되었습니다.", responseData);
     }
 
 }
