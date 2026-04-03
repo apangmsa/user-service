@@ -48,17 +48,19 @@ public class UserService {
     @Transactional
     public void approve(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow();
+                .orElseThrow(UserNotFoundException::new);
 
         int sequence = rotationGenerator.next();
 
-        user.assignDeliverySequence(sequence);
+        // user.promoteToDeliveryManager(hubId, sequence);
     }
-
+/*
     @Transactional
     public void changePassword(UUID userId, String password) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
 
+        user.changePassword(password, roleCheck);
         identityProvider.changePassword(userId, password);
-    }
+    }*/
 }
