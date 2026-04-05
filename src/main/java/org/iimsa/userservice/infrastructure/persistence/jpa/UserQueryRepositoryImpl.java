@@ -111,7 +111,10 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
     public Optional<User> findById(UUID id) {
         return Optional.ofNullable(
                 queryFactory.selectFrom(user)
-                        .where(user.id.eq(id))
+                        .where(
+                                user.id.eq(id),
+                                user.deletedAt.isNull()
+                        )
                         .fetchOne()
         );
     }
