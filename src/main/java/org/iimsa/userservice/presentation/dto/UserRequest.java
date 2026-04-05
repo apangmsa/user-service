@@ -39,8 +39,9 @@ public class UserRequest {
                 message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER")
         private String requestedRole;
 
-        @Schema(description = "슬랙 ID", example = "U12345678", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "슬랙 ID", example = "yonggyo@slack.com", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "슬랙 ID(slackId)는 알림 수신을 위해 필수입니다.")
+        @Email(message = "유효한 슬랙ID 이메일 형식이 아닙니다.")
         private String slackId;
 
         @Schema(description = "소속명", example = "옥천허브", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
