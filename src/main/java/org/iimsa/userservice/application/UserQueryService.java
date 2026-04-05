@@ -36,8 +36,9 @@ public class UserQueryService {
     // ======================Entity -> DTO 변환 메서드 (Mapper)=============================
 
     private UserResponse.Info mapToInfoDto(User user) {
+        UUID hubId = null; // DeliveryManager, HubManager 공통
+
         // DeliveryManager 정보
-        UUID hubId = null;
         Integer deliverySequence = null;
         if (user.getDeliveryManager() != null) {
             hubId = user.getDeliveryManager().getHubId();
@@ -53,10 +54,9 @@ public class UserQueryService {
         }
 
         // HubManager 정보
-        UUID manageHubId = null;
         String hubName = null;
         if (user.getHubManager() != null) {
-            manageHubId = user.getHubManager().getHubId();
+            hubId = user.getHubManager().getHubId();
             // hubName = user.getHubManager().getHubName(); // 예시
         }
 
