@@ -72,7 +72,9 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
         }
 
         if (search.getHubIds() != null && !search.getHubIds().isEmpty()) {
-            builder.and(user.deliveryManager.hubId.in(search.getHubIds()));
+            builder.and(
+                    user.deliveryManager.hubId.in(search.getHubIds())
+                            .or(user.hubManager.hubId.in(search.getHubIds())));
         }
 
         if (search.getCompanyIds() != null && !search.getCompanyIds().isEmpty()) {
@@ -81,6 +83,13 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
         if (search.getEmails() != null && !search.getEmails().isEmpty()) {
             builder.and(user.email.in(search.getEmails()));
+        }
+        if (search.getSlackIds() != null && !search.getSlackIds().isEmpty()) {
+            builder.and(user.slackId.in(search.getSlackIds()));
+        }
+
+        if (StringUtils.hasText(search.getAssociateName())) {
+            builder.and(user.associateName.containsIgnoreCase(search.getAssociateName()));
         }
 
         if (StringUtils.hasText(search.getName())) {
@@ -95,6 +104,8 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
                             .or(user.slackId.containsIgnoreCase(keyword))
                             // UUID를 문자열 템플릿으로 감싸서 검색
                             .or(Expressions.stringTemplate("CAST({0} AS string)", user.deliveryManager.hubId)
+                                    .containsIgnoreCase(keyword))
+                            .or(Expressions.stringTemplate("CAST({0} AS string)", user.hubManager.hubId)
                                     .containsIgnoreCase(keyword))
             );
         }
@@ -126,7 +137,12 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
     @Override
     public Page<User> findAllByHubId(UUID hubId, Search search, Pageable pageable) {
-        return getPage(search, pageable, user.deliveryManager.hubId.eq(hubId));
+        return getPage(
+                search,
+                pageable,
+                user.deliveryManager.hubId.eq(hubId)
+                        .or(user.hubManager.hubId.eq(hubId))
+        );
     }
 
     @Override
