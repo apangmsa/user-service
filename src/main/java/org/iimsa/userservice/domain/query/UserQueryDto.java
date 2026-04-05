@@ -32,7 +32,7 @@ public class UserQueryDto {
         private String name;
         private List<String> emails;
         private List<String> slackIds;
-        private List<String> requestedRoles;
+        private List<Role> requestedRoles;
         private List<Role> roles;
         private String associateName;
         private Status status;
