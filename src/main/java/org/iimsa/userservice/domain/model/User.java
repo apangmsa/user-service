@@ -46,18 +46,18 @@ public class User extends BaseEntity {
     @Column(length = 100, name = "slack_id")
     private String slackId;
 
-    @Column(length = 25, nullable = false, name = "requested_role")
+    @Column(length = 25, name = "requested_role")
     @Enumerated(EnumType.STRING)
     private Role requestedRole;
 
-    @Column(length = 25, nullable = false, name = "role")
+    @Column(length = 25, name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(length = 100, name = "associate_name")
     private String associateName;
 
-    @Column(name = "status")
+    @Column(length = 20, name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
 

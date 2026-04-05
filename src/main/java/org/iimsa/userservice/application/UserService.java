@@ -24,15 +24,15 @@ public class UserService {
 
     @Transactional
     public UUID signUp(UserServiceDto.SignUp data) {
-        UUID userId = identityProvider.register(data.getEmail(), data.getPassword());
+        UUID userId = identityProvider.register(data.email(), data.password());
         try {
             User user = User.create(
                     userId,
-                    data.getName(),
-                    data.getEmail(),
-                    data.getSlackId(),
-                    data.getRole(),
-                    data.getAssociateName()
+                    data.name(),
+                    data.email(),
+                    data.slackId(),
+                    data.requestedRole(),
+                    data.associateName()
             );
             return userRepository.save(user).getId();
         } catch (Exception e) {

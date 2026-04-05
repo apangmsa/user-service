@@ -1,11 +1,9 @@
 package org.iimsa.userservice.presentation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,69 +19,45 @@ public class UserRequest {
     public static class SignUp {
 
         @Schema(description = "사용자 이름", example = "이용교", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "이름은 필수 입력 항목입니다.")
+        @NotBlank(message = "이름(name)은 필수 입력 항목입니다.")
         private String name;
 
         @Schema(description = "비밀번호 (영문, 숫자, 특수문자 포함 8~20자)", example = "Password123!", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "비밀번호는 필수 입력 항목입니다.")
+        @NotBlank(message = "비밀번호(password)는 필수 입력 항목입니다.")
         @Pattern(regexp = PASSWORD_REGEXP,
                 message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.")
         private String password;
 
-        @Schema(description = "사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY_MANAGER, COMPANY_MANAGER, COMPANY_DELIVERY_MANAGER)",
-                example = "COMPANY_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
-
-        @NotBlank(message = "사용자 타입은 필수 항목입니다.")
-        @Pattern(regexp = "MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER",
-                message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER")
-        private String role;
-
-        @Schema(description = "소속 허브 ID (업체 담당자/배송 담당자 필수)", example = "550e8400-e29b-41d4-a716-446655440000",
-                requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        private UUID hubId;
-
-        @Schema(description = "소속 업체 ID (업체 담당자 필수)", example = "660f8400-f29b-51d4-b716-556655440111",
-                requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        private UUID companyId;
-
         @Schema(description = "이메일 주소", example = "yonggyo@spartahub.com", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "이메일은 필수 입력 항목입니다.")
+        @NotBlank(message = "이메일(email)은 필수 입력 항목입니다.")
         @Email(message = "유효한 이메일 형식이 아닙니다.")
         private String email;
 
+        @Schema(description = "신청된 사용자 역할 (MASTER, HUB_MANAGER, HUB_DELIVERY_MANAGER, COMPANY_MANAGER, COMPANY_DELIVERY_MANAGER)",
+                example = "COMPANY_MANAGER", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "신청된 사용자 역할(requestedRole)은 필수 항목입니다.")
+        @Pattern(regexp = "MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER",
+                message = "유효한 사용자 역할이 아닙니다. 유효한 사용자 : MASTER|HUB_MANAGER|HUB_DELIVERY_MANAGER|COMPANY_MANAGER|COMPANY_DELIVERY_MANAGER")
+        private String requestedRole;
+
         @Schema(description = "슬랙 ID", example = "U12345678", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotBlank(message = "슬랙 ID는 알림 수신을 위해 필수입니다.")
+        @NotBlank(message = "슬랙 ID(slackId)는 알림 수신을 위해 필수입니다.")
         private String slackId;
+
+        @Schema(description = "소속명", example = "옥천허브", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        private String associateName;
 
         // 응용 계층으로 전달하기 위한 변환 메서드
         public UserServiceDto.SignUp toDto() {
-            return UserServiceDto.SignUp.builder()
-                    .name(name)
-                    .password(password)
-                    .role(Role.valueOf(this.role.toUpperCase()))
-                    .hubId(hubId)
-                    .companyId(companyId)
-                    .email(email)
-                    .slackId(slackId)
-                    .build();
+            return new UserServiceDto.SignUp(
+                    name,
+                    password,
+                    email,
+                    slackId,
+                    Role.valueOf(this.requestedRole.toUpperCase()),
+                    associateName
+            );
         }
-
-        @AssertTrue(message = "허브 배송 담당자는 hubId가 필수입니다.")
-        public boolean isValidHubId() {
-            if (Role.HUB_DELIVERY_MANAGER.name().equals(role)) {
-                return hubId != null;
-            }
-            return true;
-        }
-
-        @AssertTrue(message = "업체 담당자는 companyId와 hubId가 필수입니다.")
-        public boolean isValidCOMPANYId() {
-            if (Role.COMPANY_MANAGER.name().equals(role)) {
-                return companyId != null && hubId != null;
-            }
-            return true;
-        }
-
 
     }
 }
