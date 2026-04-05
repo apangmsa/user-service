@@ -7,10 +7,13 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
+import org.iimsa.userservice.application.UserQueryService;
 import org.iimsa.userservice.application.UserService;
 import org.iimsa.userservice.presentation.dto.UserRequest;
 import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "사용자 API", description = "사용자 계정 생성 및 관리 API")
 public class UserController {
 
-    private final UserService userService;
+    private final UserService userService; // 생성, 수정, 삭제
+    private final UserQueryService userQueryService; // 조회 전용
 
     @Operation(
             summary = "신규 회원가입",
@@ -36,6 +40,13 @@ public class UserController {
         UUID userId = userService.signUp(request.toDto());
         UserResponse.SignUp responseData = new UserResponse.SignUp(userId);
         return CommonResponse.success("회원가입이 완료되었습니다.", responseData);
+    }
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<UserResponse.Info> getUser(@PathVariable UUID userId) {
+        UserResponse.Info responseData = userQueryService.getUser(userId);
+        return CommonResponse.success("사용자 조회에 성공했습니다.", responseData);
     }
 
 }
