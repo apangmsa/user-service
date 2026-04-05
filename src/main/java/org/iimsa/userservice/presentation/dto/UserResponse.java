@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.iimsa.userservice.domain.model.UserRole;
-import org.iimsa.userservice.domain.model.UserStatus;
+import org.iimsa.userservice.domain.model.Role;
+import org.iimsa.userservice.domain.model.Status;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponse {
@@ -28,7 +28,7 @@ public class UserResponse {
         @Schema(description = "사용자 이름")
         private String name;
         @Schema(description = "사용자 역할")
-        private UserRole role;
+        private Role role;
         @Schema(description = "이메일")
         private String email;
         @Schema(description = "슬랙 ID")
@@ -44,6 +44,6 @@ public class UserResponse {
         @Schema(description = "소속 업체명")
         private String companyName;
         @Schema(description = "사용자 승인 상태 (PENDING, APPROVED, REJECTED)")
-        private UserStatus status;
+        private Status status;
     }
 }

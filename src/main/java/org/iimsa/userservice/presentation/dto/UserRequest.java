@@ -10,7 +10,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.iimsa.userservice.application.dto.UserServiceDto;
-import org.iimsa.userservice.domain.model.UserRole;
+import org.iimsa.userservice.domain.model.Role;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRequest {
@@ -60,7 +60,7 @@ public class UserRequest {
             return UserServiceDto.SignUp.builder()
                     .name(name)
                     .password(password)
-                    .role(UserRole.valueOf(this.role.toUpperCase()))
+                    .role(Role.valueOf(this.role.toUpperCase()))
                     .hubId(hubId)
                     .companyId(companyId)
                     .email(email)
@@ -70,7 +70,7 @@ public class UserRequest {
 
         @AssertTrue(message = "허브 배송 담당자는 hubId가 필수입니다.")
         public boolean isValidHubId() {
-            if (UserRole.HUB_DELIVERY_MANAGER.name().equals(role)) {
+            if (Role.HUB_DELIVERY_MANAGER.name().equals(role)) {
                 return hubId != null;
             }
             return true;
@@ -78,7 +78,7 @@ public class UserRequest {
 
         @AssertTrue(message = "업체 담당자는 companyId와 hubId가 필수입니다.")
         public boolean isValidCOMPANYId() {
-            if (UserRole.COMPANY_MANAGER.name().equals(role)) {
+            if (Role.COMPANY_MANAGER.name().equals(role)) {
                 return companyId != null && hubId != null;
             }
             return true;
