@@ -9,11 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.iimsa.userservice.application.dto.UserServiceDto;
 import org.iimsa.userservice.domain.model.Role;
+import org.iimsa.userservice.domain.model.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserRequest {
-    public static final String PASSWORD_REGEXP = "^(?=.*[a-z])(?=.*[0-9])(?=.*[^a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s])[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\\s\\S]{8,20}$";
-
     @Data
     @Schema(description = "회원가입 요청 데이터")
     public static class SignUp {
@@ -24,7 +23,7 @@ public class UserRequest {
 
         @Schema(description = "비밀번호 (영문, 숫자, 특수문자 포함 8~20자)", example = "Password123!", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "비밀번호(password)는 필수 입력 항목입니다.")
-        @Pattern(regexp = PASSWORD_REGEXP,
+        @Pattern(regexp = User.PASSWORD_REGEX,
                 message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~20자여야 합니다.")
         private String password;
 
