@@ -9,8 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
 import org.iimsa.userservice.application.UserQueryService;
 import org.iimsa.userservice.application.UserService;
+import org.iimsa.userservice.domain.query.UserQueryDto;
 import org.iimsa.userservice.presentation.dto.UserRequest;
 import org.iimsa.userservice.presentation.dto.UserResponse;
+import org.iimsa.userservice.presentation.dto.UserResponse.Info;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +51,13 @@ public class UserController {
     public CommonResponse<UserResponse.Info> getUser(@PathVariable UUID userId) {
         UserResponse.Info responseData = userQueryService.getUser(userId);
         return CommonResponse.success("사용자 조회에 성공했습니다.", responseData);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<Page<Info>> getUsers(UserQueryDto.Search search, Pageable pageable) {
+        Page<UserResponse.Info> responseData = userQueryService.searchUsers(search, pageable);
+        return CommonResponse.success("사용자 목록 조회에 성공했습니다.", responseData);
     }
 
 }
