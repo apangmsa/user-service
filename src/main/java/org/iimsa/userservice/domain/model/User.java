@@ -1,6 +1,6 @@
 package org.iimsa.userservice.domain.model;
 
-import static org.iimsa.userservice.domain.model.UserRole.MASTER;
+import static org.iimsa.userservice.domain.model.Status.PENDING;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -16,11 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.iimsa.common.domain.BaseEntity;
-import org.iimsa.userservice.domain.exception.CannotPromoteToDeliveryManagerException;
 import org.iimsa.userservice.domain.exception.InvalidEmailException;
 import org.iimsa.userservice.domain.exception.InvalidPasswordException;
-import org.iimsa.userservice.domain.exception.UnauthorizedPasswordChangeException;
-import org.iimsa.userservice.domain.service.identity.RoleCheck;
 import org.springframework.util.StringUtils;
 
 @Builder(access = AccessLevel.PRIVATE)
@@ -49,31 +46,44 @@ public class User extends BaseEntity {
     @Column(length = 100, name = "slack_id")
     private String slackId;
 
-    @Column(length = 20, nullable = false, name = "role")
+    @Column(length = 25, nullable = false, name = "requested_role")
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private Role requestedRole;
+
+    @Column(length = 25, nullable = false, name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(length = 100, name = "associate_name")
+    private String associateName;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private Status status;
 
     @Embedded
-    private DeliveryManager deliveryManager; // 직원 소속 : 허브/업체/본사
+    private HubManager hubManager;
 
+    @Embedded
+    private CompanyManager companyManager;
 
-    // User 엔티티 내부
-    public static User create(UUID id, String username, String email, String slackId, UserRole role) {
+    @Embedded
+    private DeliveryManager deliveryManager;
+
+    public static User create(UUID id, String username, String email, String slackId, Role requestedRole,
+                              String associateName) {
         validateEmail(email);
+        validateEmail(slackId);
 
-        UserBuilder builder = User.builder()
+        return User.builder()
                 .id(id)
                 .username(username)
                 .email(email)
                 .slackId(slackId)
-                .userRole(role)
-                .deliveryManager(null); // 승인 단계에서 넣어줌
-
-        return builder.build();
+                .requestedRole(requestedRole)
+                .status(PENDING)
+                .associateName(associateName)
+                .build();
     }
 
     // ===================유효성 검사
@@ -83,28 +93,9 @@ public class User extends BaseEntity {
         }
     }
 
-    // 배송기사 순번 할당
-
     private static void validateEmail(String email) {
         if (!StringUtils.hasText(email) || !email.matches(EMAIL_REGEX)) {
             throw new InvalidEmailException("이메일 형식이 올바르지 않습니다.");
         }
     }
-
-    public void changePassword(String password, RoleCheck roleCheck) {
-        if (!roleCheck.hasRole(MASTER) && !roleCheck.isMine(this.id)) {
-            throw new UnauthorizedPasswordChangeException();
-        }
-        validatePassword(password);
-    }
-
-    public void promoteToDeliveryManager(UUID hubId, int sequence) {
-        if (this.userRole != UserRole.HUB_DELIVERY_MANAGER &&
-                this.userRole != UserRole.COMPANY_DELIVERY_MANAGER) {
-            throw new CannotPromoteToDeliveryManagerException("배송 담당 권한이 없는 유저입니다.");
-        } else {
-            this.deliveryManager = DeliveryManager.create(this.userRole, hubId, sequence);
-        }
-    }
-
 }
