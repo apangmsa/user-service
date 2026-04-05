@@ -22,5 +22,7 @@ public class UserServiceDto {
 
         private final String email;
         private final String slackId;
+
+        private final String associateName;
     }
 }

@@ -31,7 +31,8 @@ public class UserService {
                     data.getName(),
                     data.getEmail(),
                     data.getSlackId(),
-                    data.getRole()
+                    data.getRole(),
+                    data.getAssociateName()
             );
             return userRepository.save(user).getId();
         } catch (Exception e) {
