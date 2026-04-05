@@ -5,7 +5,6 @@ import static org.iimsa.userservice.domain.model.QUser.user;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -90,11 +89,13 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
 
         if (StringUtils.hasText(search.getKeyword())) {
             String keyword = search.getKeyword();
-            StringPath hubIdPath = Expressions.stringPath(user.deliveryManager.hubId, "hubId");
             builder.and(
                     user.username.containsIgnoreCase(keyword)
                             .or(user.email.containsIgnoreCase(keyword))
-                            .or(hubIdPath.containsIgnoreCase(keyword))
+                            .or(user.slackId.containsIgnoreCase(keyword))
+                            // UUID를 문자열 템플릿으로 감싸서 검색
+                            .or(Expressions.stringTemplate("CAST({0} AS string)", user.deliveryManager.hubId)
+                                    .containsIgnoreCase(keyword))
             );
         }
 
