@@ -4,7 +4,7 @@ import java.util.UUID;
 import org.iimsa.userservice.domain.model.Role;
 import org.iimsa.userservice.domain.model.User;
 
-public record UserApprovedPayload(
+public record UserUpdatedPayload(
         UUID userId,
         String name,
         String email,
@@ -14,7 +14,7 @@ public record UserApprovedPayload(
         UUID companyId,
         Integer deliverySequence
 ) {
-    public static UserApprovedPayload from(User user) {
+    public static UserUpdatedPayload from(User user) {
         Role role = user.getRole();
 
         UUID hubId = null;
@@ -32,7 +32,7 @@ public record UserApprovedPayload(
             }
         }
 
-        return new UserApprovedPayload(
+        return new UserUpdatedPayload(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),

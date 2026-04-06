@@ -10,6 +10,7 @@ public record UserDeletedPayload(
         String username,
         String email,
         Role role,
+        Integer deliverySequence, // 배송기사라면, 재배정 시 순번 참고용
         LocalDateTime deletedAt,
         String deletedBy
 ) {
@@ -19,6 +20,7 @@ public record UserDeletedPayload(
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole(),
+                user.getDeliveryManager() == null ? null : user.getDeliveryManager().getSequence(),
                 user.getDeletedAt(),
                 user.getDeletedBy()
         );
