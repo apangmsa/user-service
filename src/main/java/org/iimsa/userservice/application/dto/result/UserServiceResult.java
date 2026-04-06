@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.iimsa.userservice.domain.model.Role;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserServiceDto {
+public class UserServiceResult {
 
     @Builder
     public record SignUp(

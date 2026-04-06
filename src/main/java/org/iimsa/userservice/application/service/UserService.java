@@ -5,7 +5,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.iimsa.common.exception.BadRequestException;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
-import org.iimsa.userservice.application.dto.result.UserServiceDto;
+import org.iimsa.userservice.application.dto.result.UserServiceResult;
 import org.iimsa.userservice.domain.event.UserEventProducer;
 import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
@@ -30,7 +30,7 @@ public class UserService {
     // private final RoleCheck roleCheck;
 
     @Transactional
-    public UUID signUp(UserServiceDto.SignUp data) {
+    public UUID signUp(UserServiceResult.SignUp data) {
         UUID userId = identityProvider.register(data.email(), data.password());
         try {
             User user = User.create(
