@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.iimsa.common.domain.BaseEntity;
 import org.iimsa.userservice.domain.exception.InvalidEmailException;
 import org.iimsa.userservice.domain.exception.InvalidPasswordException;
+import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.springframework.util.StringUtils;
 
 @Builder(access = AccessLevel.PRIVATE)
@@ -84,6 +85,20 @@ public class User extends BaseEntity {
                 .status(PENDING)
                 .associateName(associateName)
                 .build();
+    }
+
+    public void delete(String deletedByUsername) {
+        if (this.deletedAt != null) {
+            throw new InvalidUserException("이미 삭제된 사용자입니다.");
+        }
+        // 공통 모듈의 BaseEntity.delete()메서드 사용
+        super.delete(deletedByUsername);
+        // status도 REJECTED로 변경해서 혹시 모를 로그인 차단
+        this.status = Status.REJECTED;
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 
     // ===================유효성 검사
