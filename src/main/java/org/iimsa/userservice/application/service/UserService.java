@@ -3,7 +3,9 @@ package org.iimsa.userservice.application.service;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
 import org.iimsa.userservice.application.dto.result.UserServiceDto;
+import org.iimsa.userservice.domain.event.UserEventProducer;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
 import org.iimsa.userservice.domain.model.User;
 import org.iimsa.userservice.domain.repository.UserRepository;
@@ -17,9 +19,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final IdentityProvider identityProvider;
+    private final HubProvider hubProvider;
+
+    private final UserEventProducer userEventProducer;
+
     private final UserRepository userRepository;
     private final DeliveryRotationGenerator rotationGenerator;
-    private final HubProvider hubProvider;
     // private final RoleCheck roleCheck;
 
     @Transactional
@@ -40,6 +45,18 @@ public class UserService {
             identityProvider.withdraw(userId);
             throw e;
         }
+    }
+
+    @Transactional
+    public void deleteUser(DeleteUserCommand command) {
+        User user = userRepository.findById(command.targetUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        user.delete(command.deletedBy());
+        // @Transactional 환경에서는 JPA 더티 체킹이 자동으로 UPDATE 쿼리를 날려줌
+        // userRepository.save(user);
+        // 이벤트 발행 (Kafka 또는 RabbitMQ)
+        userEventProducer.deleted(user);
     }
 
     @Transactional
