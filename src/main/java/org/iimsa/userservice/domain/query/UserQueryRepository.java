@@ -1,5 +1,6 @@
 package org.iimsa.userservice.domain.query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.iimsa.userservice.application.dto.query.UserQueryDto;
@@ -18,4 +19,8 @@ public interface UserQueryRepository {
     Page<User> findAllByHubId(UUID hubId, UserQueryDto.Search search, Pageable pageable);
 
     Page<User> findAllByCompanyId(UUID companyId, UserQueryDto.Search search, Pageable pageable);
+
+    // 다음 순번 허브 배송기사 조회에 사용
+    List<User> findHubDeliveryManagers();
+
 }

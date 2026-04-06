@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
 import org.iimsa.userservice.application.dto.query.UserQueryDto;
+import org.iimsa.userservice.application.service.DeliveryManagerService;
 import org.iimsa.userservice.application.service.UserQueryService;
 import org.iimsa.userservice.application.service.UserService;
+import org.iimsa.userservice.presentation.dto.DeliveryManagerSequenceResponse;
 import org.iimsa.userservice.presentation.dto.UserRequest;
 import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.iimsa.userservice.presentation.dto.UserResponse.Info;
@@ -35,6 +37,7 @@ public class UserController {
 
     private final UserService userService; // 생성, 수정, 삭제
     private final UserQueryService userQueryService; // 조회 전용
+    private final DeliveryManagerService deliveryManagerService;
 
     @Operation(
             summary = "신규 회원가입",
@@ -60,6 +63,12 @@ public class UserController {
     public CommonResponse<Page<Info>> getUsers(UserQueryDto.Search search, Pageable pageable) {
         Page<UserResponse.Info> responseData = userQueryService.searchUsers(search, pageable);
         return CommonResponse.success("사용자 목록 조회에 성공했습니다.", responseData);
+    }
+
+    @GetMapping("/next-sequence/hub-delivery")
+    @ResponseStatus(HttpStatus.OK)
+    public DeliveryManagerSequenceResponse getNextHubDeliver() {
+        return deliveryManagerService.getNext();
     }
 
     @Operation(

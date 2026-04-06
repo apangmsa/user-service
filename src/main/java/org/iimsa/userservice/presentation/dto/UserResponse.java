@@ -33,7 +33,7 @@ public class UserResponse {
         private String name;
         @Schema(description = "이메일")
         private String email;
-        @Schema(description = "슬랙 ID")
+        @Schema(description = "슬랙 ID (이메일 형식s)")
         private String slackId;
         @Schema(description = "사용자 희망 역할")
         private Role requestedRole;

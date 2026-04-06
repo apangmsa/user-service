@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.iimsa.userservice.application.dto.query.UserQueryDto.Search;
+import org.iimsa.userservice.domain.model.Role;
+import org.iimsa.userservice.domain.model.Status;
 import org.iimsa.userservice.domain.model.User;
 import org.iimsa.userservice.domain.query.UserQueryRepository;
 import org.springframework.data.domain.Page;
@@ -150,5 +152,17 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
         return getPage(search, pageable, user.companyManager.companyId.eq(companyId));
     }
 
+    @Override
+    public List<User> findHubDeliveryManagers() {
+        return queryFactory
+                .selectFrom(user)
+                .where(
+                        user.role.eq(Role.HUB_DELIVERY_MANAGER),
+                        user.status.eq(Status.APPROVED),
+                        user.deletedAt.isNull()
+                )
+                .orderBy(user.deliveryManager.sequence.asc())
+                .fetch();
+    }
 
 }

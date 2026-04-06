@@ -32,7 +32,7 @@ public class UserQueryService {
         return userQueryRepository.findAll(search, pageable)
                 .map(this::mapToInfoDto);
     }
-
+    
     // ======================Entity -> DTO 변환 메서드 (Mapper)=============================
 
     private UserResponse.Info mapToInfoDto(User user) {

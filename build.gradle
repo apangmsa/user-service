@@ -44,12 +44,16 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'com.iimsa:common:2.0-SNAPSHOT'
+    implementation 'com.iimsa:common:3.0-SNAPSHOT'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation "org.keycloak:keycloak-admin-client:26.0.8" // 회원정보 생성, 수정, 변경 기능 제공
     implementation 'org.jboss.resteasy:resteasy-jackson2-provider'
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
 
     // Querydsl APT
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
