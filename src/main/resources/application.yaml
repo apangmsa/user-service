@@ -25,6 +25,12 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: "https://keycloak.code-factory.co.kr/realms/codefactory"
+# kafka
+topics:
+  user:
+    approved: user.approved
+    deleted: user.deleted
+
 
 # 키클록 설정
 keycloak:

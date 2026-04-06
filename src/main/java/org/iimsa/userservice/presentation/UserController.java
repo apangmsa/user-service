@@ -7,6 +7,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
+import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
 import org.iimsa.userservice.application.dto.query.UserQueryDto;
 import org.iimsa.userservice.application.service.UserQueryService;
 import org.iimsa.userservice.application.service.UserService;
@@ -16,6 +17,7 @@ import org.iimsa.userservice.presentation.dto.UserResponse.Info;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,4 +62,14 @@ public class UserController {
         return CommonResponse.success("사용자 목록 조회에 성공했습니다.", responseData);
     }
 
+    @Operation(
+            summary = "사용자 삭제 (MASTER 전용)",
+            description = "소프트 삭제 처리 후 연관 서비스에 삭제 이벤트를 발행합니다."
+    )
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public CommonResponse<Void> deleteUser(@PathVariable UUID userId) {
+        userService.deleteUser(new DeleteUserCommand(userId, "삭제자@email.com"));
+        return CommonResponse.success("사용자가 삭제되었습니다.", null);
+    }
 }
