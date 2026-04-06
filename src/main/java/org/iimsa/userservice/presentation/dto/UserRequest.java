@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.iimsa.userservice.application.dto.UserServiceDto;
+import org.iimsa.userservice.application.dto.result.UserServiceDto;
 import org.iimsa.userservice.domain.model.Role;
 import org.iimsa.userservice.domain.model.User;
 

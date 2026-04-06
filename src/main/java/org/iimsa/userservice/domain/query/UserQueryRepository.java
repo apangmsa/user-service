@@ -2,6 +2,7 @@ package org.iimsa.userservice.domain.query;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.iimsa.userservice.application.dto.query.UserQueryDto;
 import org.iimsa.userservice.domain.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

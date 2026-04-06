@@ -1,10 +1,10 @@
-package org.iimsa.userservice.application;
+package org.iimsa.userservice.application.service;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.iimsa.userservice.application.dto.query.UserQueryDto;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
 import org.iimsa.userservice.domain.model.User;
-import org.iimsa.userservice.domain.query.UserQueryDto;
 import org.iimsa.userservice.domain.query.UserQueryRepository;
 import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.iimsa.userservice.presentation.dto.UserResponse.Info;

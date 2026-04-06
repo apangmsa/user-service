@@ -1,9 +1,9 @@
-package org.iimsa.userservice.application;
+package org.iimsa.userservice.application.service;
 
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.iimsa.userservice.application.dto.UserServiceDto;
+import org.iimsa.userservice.application.dto.result.UserServiceDto;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
 import org.iimsa.userservice.domain.model.User;
 import org.iimsa.userservice.domain.repository.UserRepository;

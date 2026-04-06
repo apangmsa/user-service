@@ -1,4 +1,4 @@
-package org.iimsa.userservice.application.dto;
+package org.iimsa.userservice.application.dto.result;
 
 import lombok.AccessLevel;
 import lombok.Builder;
