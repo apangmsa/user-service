@@ -3,9 +3,11 @@ package org.iimsa.userservice.application.service;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.iimsa.common.exception.BadRequestException;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
 import org.iimsa.userservice.application.dto.result.UserServiceDto;
 import org.iimsa.userservice.domain.event.UserEventProducer;
+import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
 import org.iimsa.userservice.domain.model.User;
 import org.iimsa.userservice.domain.repository.UserRepository;
@@ -52,7 +54,12 @@ public class UserService {
         User user = userRepository.findById(command.targetUserId())
                 .orElseThrow(UserNotFoundException::new);
 
-        user.delete(command.deletedBy());
+        try {
+
+            user.delete(command.deletedBy());
+        } catch (InvalidUserException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         // @Transactional 환경에서는 JPA 더티 체킹이 자동으로 UPDATE 쿼리를 날려줌
         // userRepository.save(user);
         // 이벤트 발행 (Kafka 또는 RabbitMQ)
