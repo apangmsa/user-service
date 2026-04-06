@@ -18,9 +18,14 @@ public class DeliveryManagerService {
     public DeliveryManagerSequenceResponse getNext() {
 
         List<User> managers = userQueryRepository.findHubDeliveryManagers();
+        int size = managers.size();
+
+        if (size == 0) {
+            throw new IllegalStateException("배송 담당자가 없습니다.");
+        }
 
         int next = counter.next();
-        int index = next % managers.size();
+        int index = (next - 1) % size;
 
         User selected = managers.get(index);
 
