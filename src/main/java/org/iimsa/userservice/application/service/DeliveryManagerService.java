@@ -17,6 +17,9 @@ public class DeliveryManagerService {
 
     public DeliveryManagerSequenceResponse getNext() {
 
+        /* 만약 허브마다 10명 방식으로 바뀌면 hubId로 받아오기, 시퀀스 => 테이블로 관리 :
+         1. 허브 서비스에서 허브 생성 이벤트 발행, hub.created { hubId: "uuid-A" }
+         2. 유저 서비스가 이벤트 수신 → 카운터 행 자동 생성 INSERT INTO hub_rotation_counter (hub_id, counter) VALUES ('uuid-A', 0)*/
         List<User> managers = userQueryRepository.findHubDeliveryManagers();
         int size = managers.size();
 

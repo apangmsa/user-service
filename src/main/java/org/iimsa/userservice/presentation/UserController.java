@@ -7,15 +7,17 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
+import org.iimsa.userservice.application.dto.command.ApproveUserCommand;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
-import org.iimsa.userservice.application.dto.query.UserQueryDto;
+import org.iimsa.userservice.application.dto.query.UserQueryDto.Search;
 import org.iimsa.userservice.application.service.DeliveryManagerService;
 import org.iimsa.userservice.application.service.UserQueryService;
 import org.iimsa.userservice.application.service.UserService;
+import org.iimsa.userservice.presentation.dto.ApproveRequest;
 import org.iimsa.userservice.presentation.dto.DeliveryManagerSequenceResponse;
 import org.iimsa.userservice.presentation.dto.UserRequest;
-import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.iimsa.userservice.presentation.dto.UserResponse.Info;
+import org.iimsa.userservice.presentation.dto.UserResponse.SignUp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -37,7 +39,7 @@ public class UserController {
 
     private final UserService userService; // 생성, 수정, 삭제
     private final UserQueryService userQueryService; // 조회 전용
-    private final DeliveryManagerService deliveryManagerService;
+    private final DeliveryManagerService deliveryManagerService; // 시퀀스 조회등 배송기사 관련
 
     @Operation(
             summary = "신규 회원가입",
@@ -45,23 +47,23 @@ public class UserController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<UserResponse.SignUp> signUp(@RequestBody @Valid UserRequest.SignUp request) {
+    public CommonResponse<SignUp> signUp(@RequestBody @Valid UserRequest.SignUp request) {
         UUID userId = userService.signUp(request.toDto());
-        UserResponse.SignUp responseData = new UserResponse.SignUp(userId);
+        SignUp responseData = new SignUp(userId);
         return CommonResponse.success("회원가입이 완료되었습니다.", responseData);
     }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommonResponse<UserResponse.Info> getUser(@PathVariable UUID userId) {
-        UserResponse.Info responseData = userQueryService.getUser(userId);
+    public CommonResponse<Info> getUser(@PathVariable UUID userId) {
+        Info responseData = userQueryService.getUser(userId);
         return CommonResponse.success("사용자 조회에 성공했습니다.", responseData);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CommonResponse<Page<Info>> getUsers(UserQueryDto.Search search, Pageable pageable) {
-        Page<UserResponse.Info> responseData = userQueryService.searchUsers(search, pageable);
+    public CommonResponse<Page<Info>> getUsers(Search search, Pageable pageable) {
+        Page<Info> responseData = userQueryService.searchUsers(search, pageable);
         return CommonResponse.success("사용자 목록 조회에 성공했습니다.", responseData);
     }
 
@@ -80,5 +82,32 @@ public class UserController {
     public CommonResponse<Void> deleteUser(@PathVariable UUID userId) {
         userService.deleteUser(new DeleteUserCommand(userId, "삭제자@email.com"));
         return CommonResponse.success("사용자가 삭제되었습니다.", null);
+    }
+
+    @Operation(
+            summary = "사용자 가입 승인 (MASTER 전용)",
+            description = "가입 정보를 확인하고 사용자의 상태를 APPROVED로 변경합니다."
+    )
+    @PostMapping("/approve/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<Info> approveUser(
+            @PathVariable UUID userId,
+            @RequestBody ApproveRequest request
+    ) {
+        // TODO: approvedBy는 SecurityContext에서 추출 (임시로 하드코딩)
+        String approvedBy = "승인자@email.com";
+
+        // TODO: 허브/업체 존재 검증
+
+        Info responseData = userService.approve(
+                new ApproveUserCommand(
+                        userId,
+                        request.requestedRole(),
+                        request.hubId(),
+                        request.companyId(),
+                        approvedBy
+                )
+        );
+        return CommonResponse.success(userId + "사용자를 승인했습니다.", responseData);
     }
 }

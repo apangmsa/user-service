@@ -4,16 +4,20 @@ import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.iimsa.common.exception.BadRequestException;
+import org.iimsa.userservice.application.dto.command.ApproveUserCommand;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
 import org.iimsa.userservice.application.dto.result.UserServiceResult;
 import org.iimsa.userservice.domain.event.UserEventProducer;
 import org.iimsa.userservice.domain.exception.InvalidUserException;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
+import org.iimsa.userservice.domain.model.Role;
 import org.iimsa.userservice.domain.model.User;
 import org.iimsa.userservice.domain.repository.UserRepository;
 import org.iimsa.userservice.domain.service.hubdeliverymanager.DeliveryRotationGenerator;
 import org.iimsa.userservice.domain.service.hubdeliverymanager.HubProvider;
 import org.iimsa.userservice.domain.service.identity.IdentityProvider;
+import org.iimsa.userservice.presentation.dto.UserResponse;
+import org.iimsa.userservice.presentation.dto.UserResponse.Info;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,21 +71,34 @@ public class UserService {
     }
 
     @Transactional
-    public void approve(UUID userId) {
-        User user = userRepository.findById(userId)
+    public Info approve(ApproveUserCommand command) {
+        // 대상 사용자 조회
+        User user = userRepository.findById(command.targetUserId())
                 .orElseThrow(UserNotFoundException::new);
 
-        int sequence = rotationGenerator.next();
+        // 외부 허브 유효성 검증 (hubId가 있을 때만)
+        if (command.hubId() != null) {
+            hubProvider.get(command.hubId()); // 허브 서비스 호출
+        }
 
-        // user.promoteToDeliveryManager(hubId, sequence);
+        // 시퀀스 생성 (배송 담당자 역할인 경우에만)
+        Integer sequence = isDeliveryManagerRole(command.requestedRole())
+                ? rotationGenerator.next()
+                : null;
+
+        try {
+            user.approve(command.requestedRole(), command.hubId(), command.companyId(), sequence);
+        } catch (InvalidUserException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        // Kafka 이벤트 발행
+        userEventProducer.approved(user);
+
+        return UserResponse.from(user);
     }
-/*
-    @Transactional
-    public void changePassword(UUID userId, String password) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
 
-        user.changePassword(password, roleCheck);
-        identityProvider.changePassword(userId, password);
-    }*/
+    private boolean isDeliveryManagerRole(Role role) {
+        return role == Role.HUB_DELIVERY_MANAGER || role == Role.COMPANY_DELIVERY_MANAGER;
+    }
 }

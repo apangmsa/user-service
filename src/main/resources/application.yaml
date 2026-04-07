@@ -39,7 +39,8 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true # 두번째 이후 실행에만 true
-
+    default-schema: public
+    schemas: public
 # kafka
 topics:
   user:

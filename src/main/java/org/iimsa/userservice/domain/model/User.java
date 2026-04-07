@@ -87,6 +87,43 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    public void approve(Role requestedRole, UUID hubId, UUID companyId, int sequence) {
+        if (this.requestedRole == null) {
+            throw new InvalidUserException("승인 요청된 역할이 없습니다.");
+        }
+        if (requestedRole != this.requestedRole) {
+            throw new InvalidUserException("요청된 역할과 일치하지 않습니다.");
+        }
+
+        switch (requestedRole) {
+            case HUB_MANAGER -> {
+                if (hubId == null) {
+                    throw new InvalidUserException("허브 ID는 필수입니다.");
+                }
+                this.hubManager = HubManager.create(hubId);
+            }
+            case HUB_DELIVERY_MANAGER -> {
+                int seq = sequence;
+                this.deliveryManager = DeliveryManager.create(requestedRole, hubId, seq);
+            }
+            case COMPANY_MANAGER -> {
+                if (companyId == null) {
+                    throw new InvalidUserException("업체 ID는 필수입니다.");
+                }
+                this.companyManager = CompanyManager.create(companyId);
+            }
+            case COMPANY_DELIVERY_MANAGER -> {
+                // hubId 필수 (DeliveryManager.create 내부에서 검증)
+                this.deliveryManager = DeliveryManager.create(requestedRole, hubId, sequence);
+            }
+            default -> throw new InvalidUserException("마스터는 별도 승인 대상이 아닙니다.");
+        }
+
+        this.role = requestedRole;
+        this.requestedRole = null;
+        this.status = Status.APPROVED;
+    }
+
     public void delete(String deletedByUsername) {
         if (this.deletedAt != null) {
             throw new InvalidUserException("이미 삭제된 사용자입니다.");
