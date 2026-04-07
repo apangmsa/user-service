@@ -116,7 +116,7 @@ public class UserController {
         Info responseData = userService.updateProfile(
                 new UpdateProfileCommand(
                         userId,
-                        request.username(),
+                        request.name(),
                         request.slackId(),
                         "수정자@email.com" // TODO: SecurityContext
                 )
