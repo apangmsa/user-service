@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.iimsa.common.exception.BadRequestException;
 import org.iimsa.userservice.application.dto.command.ApproveUserCommand;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
+import org.iimsa.userservice.application.dto.command.UpdateProfileCommand;
+import org.iimsa.userservice.application.dto.command.UpdateRoleCommand;
 import org.iimsa.userservice.application.dto.result.UserServiceResult;
 import org.iimsa.userservice.domain.event.UserEventProducer;
 import org.iimsa.userservice.domain.exception.InvalidUserException;
@@ -51,6 +53,41 @@ public class UserService {
             identityProvider.withdraw(userId);
             throw e;
         }
+    }
+
+    @Transactional
+    public Info updateProfile(UpdateProfileCommand command) {
+        User user = userRepository.findById(command.targetUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        try {
+
+            user.updateProfile(command.username(), command.slackId());
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        return UserResponse.from(user);
+    }
+
+    @Transactional
+    public Info updateRole(UpdateRoleCommand command) {
+        User user = userRepository.findById(command.targetUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        if (command.hubId() != null) {
+            hubProvider.get(command.hubId());
+        }
+        int sequence = isDeliveryManagerRole(command.role())
+                ? rotationGenerator.next()
+                : null;
+        try {
+            user.updateRole(command.role(), command.hubId(), command.companyId(), sequence);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        return UserResponse.from(user);
     }
 
     @Transactional

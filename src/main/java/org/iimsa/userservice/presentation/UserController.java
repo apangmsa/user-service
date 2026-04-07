@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.iimsa.common.response.CommonResponse;
 import org.iimsa.userservice.application.dto.command.ApproveUserCommand;
 import org.iimsa.userservice.application.dto.command.DeleteUserCommand;
+import org.iimsa.userservice.application.dto.command.UpdateProfileCommand;
+import org.iimsa.userservice.application.dto.command.UpdateRoleCommand;
 import org.iimsa.userservice.application.dto.query.UserQueryDto.Search;
 import org.iimsa.userservice.application.service.DeliveryManagerService;
 import org.iimsa.userservice.application.service.UserQueryService;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -82,6 +85,43 @@ public class UserController {
     public CommonResponse<Void> deleteUser(@PathVariable UUID userId) {
         userService.deleteUser(new DeleteUserCommand(userId, "삭제자@email.com"));
         return CommonResponse.success("사용자가 삭제되었습니다.", null);
+    }
+
+    // MASTER 전용 - 권한 변경
+    @PatchMapping("/{userId}/role")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<Info> updateRole(
+            @PathVariable UUID userId,
+            @RequestBody UpdateRoleRequest request
+    ) {
+        Info responseData = userService.updateRole(
+                new UpdateRoleCommand(
+                        userId,
+                        request.role(),
+                        request.hubId(),
+                        request.companyId(),
+                        "수정자@email.com" // TODO: SecurityContext
+                )
+        );
+        return CommonResponse.success("사용자 권한이 변경되었습니다.", responseData);
+    }
+
+    // 본인 전용 - 프로필 수정
+    @PatchMapping("/{userId}/profile")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<Info> updateProfile(
+            @PathVariable UUID userId,
+            @RequestBody UpdateProfileRequest request
+    ) {
+        Info responseData = userService.updateProfile(
+                new UpdateProfileCommand(
+                        userId,
+                        request.username(),
+                        request.slackId(),
+                        "수정자@email.com" // TODO: SecurityContext
+                )
+        );
+        return CommonResponse.success("사용자 정보가 수정되었습니다.", responseData);
     }
 
     @Operation(

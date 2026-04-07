@@ -87,6 +87,46 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    // 본인 수정
+    public void updateProfile(String username, String slackId) {
+        if (StringUtils.hasText(username)) {
+            this.username = username;
+        }
+        if (StringUtils.hasText(slackId)) {
+            validateEmail(slackId);
+            this.slackId = slackId;
+        }
+    }
+
+    // MASTER 권한 수정
+    public void updateRole(Role newRole, UUID hubId, UUID companyId, int sequence) {
+        switch (newRole) {
+            case HUB_MANAGER -> {
+                if (hubId == null) {
+                    throw new InvalidUserException("허브 ID는 필수입니다.");
+                }
+                this.hubManager = HubManager.create(hubId);
+                this.companyManager = null;
+                this.deliveryManager = null;
+            }
+            case HUB_DELIVERY_MANAGER, COMPANY_DELIVERY_MANAGER -> {
+                this.deliveryManager = DeliveryManager.create(newRole, hubId, sequence);
+                this.hubManager = null;
+                this.companyManager = null;
+            }
+            case COMPANY_MANAGER -> {
+                if (companyId == null) {
+                    throw new InvalidUserException("업체 ID는 필수입니다.");
+                }
+                this.companyManager = CompanyManager.create(companyId);
+                this.hubManager = null;
+                this.deliveryManager = null;
+            }
+            default -> throw new InvalidUserException("변경할 수 없는 역할입니다.");
+        }
+        this.role = newRole;
+    }
+
     public void approve(Role requestedRole, UUID hubId, UUID companyId, int sequence) {
         if (this.requestedRole == null) {
             throw new InvalidUserException("승인 요청된 역할이 없습니다.");
@@ -132,10 +172,6 @@ public class User extends BaseEntity {
         super.delete(deletedByUsername);
         // status도 REJECTED로 변경해서 혹시 모를 로그인 차단
         this.status = Status.REJECTED;
-    }
-
-    public boolean isDeleted() {
-        return this.deletedAt != null;
     }
 
     // ===================유효성 검사
