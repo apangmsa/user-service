@@ -99,7 +99,7 @@ public class User extends BaseEntity {
     }
 
     // MASTER 권한 수정
-    public void updateRole(Role newRole, UUID hubId, UUID companyId, int sequence) {
+    public void updateRole(Role newRole, UUID hubId, UUID companyId, Integer sequence) {
         switch (newRole) {
             case HUB_MANAGER -> {
                 if (hubId == null) {
@@ -127,7 +127,7 @@ public class User extends BaseEntity {
         this.role = newRole;
     }
 
-    public void approve(Role requestedRole, UUID hubId, UUID companyId, int sequence) {
+    public void approve(Role requestedRole, UUID hubId, UUID companyId, Integer sequence) {
         if (this.requestedRole == null) {
             throw new InvalidUserException("승인 요청된 역할이 없습니다.");
         }
@@ -143,7 +143,7 @@ public class User extends BaseEntity {
                 this.hubManager = HubManager.create(hubId);
             }
             case HUB_DELIVERY_MANAGER -> {
-                int seq = sequence;
+                Integer seq = sequence;
                 this.deliveryManager = DeliveryManager.create(requestedRole, hubId, seq);
             }
             case COMPANY_MANAGER -> {

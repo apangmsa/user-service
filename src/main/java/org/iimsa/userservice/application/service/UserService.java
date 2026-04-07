@@ -78,7 +78,7 @@ public class UserService {
         if (command.hubId() != null) {
             hubProvider.get(command.hubId());
         }
-        int sequence = isDeliveryManagerRole(command.role())
+        Integer sequence = isDeliveryManagerRole(command.role())
                 ? rotationGenerator.next()
                 : null;
         try {

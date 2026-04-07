@@ -18,14 +18,14 @@ public class DeliveryManager {
     private UUID hubId; // COMPANY_DELIVERY_MANAGER는 필수, HUB_DELIVERY_MANAGER는 선택(확장성)
 
     @Column(name = "delivery_sequence")
-    private int sequence;
+    private Integer sequence;
 
-    private DeliveryManager(UUID hubId, int sequence) {
+    private DeliveryManager(UUID hubId, Integer sequence) {
         this.hubId = hubId;
         this.sequence = sequence;
     }
 
-    public static DeliveryManager create(Role role, UUID hubId, int sequence) {
+    public static DeliveryManager create(Role role, UUID hubId, Integer sequence) {
         // 업체 배송 담당자는 소속 허브가 필수
         if (role == COMPANY_DELIVERY_MANAGER && hubId == null) {
             throw new InvalidUserException("업체 배송 담당자는 허브 ID가 필수입니다.");
