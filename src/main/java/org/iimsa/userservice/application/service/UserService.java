@@ -66,6 +66,8 @@ public class UserService {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+        // 이름 변경 → Hub, Company, Delivery, Order에 알림
+        userEventProducer.updated(user);
 
         return UserResponse.from(user);
     }
@@ -87,6 +89,9 @@ public class UserService {
             throw new BadRequestException(e.getMessage());
         }
 
+        // 역할 변경 → 각 서비스에 알림
+        userEventProducer.updated(user);
+        
         return UserResponse.from(user);
     }
 
