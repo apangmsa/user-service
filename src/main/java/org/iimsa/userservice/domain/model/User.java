@@ -150,4 +150,10 @@ public class User extends BaseEntity {
             throw new InvalidEmailException("이메일 형식이 올바르지 않습니다.");
         }
     }
+
+    public void reject() {
+        this.status = Status.REJECTED;
+        // 기록용으로 거절된 신청 역할을 남김
+        // this.requestedRole = null;
+    }
 }

@@ -97,8 +97,6 @@ public class UserController {
         // TODO: approvedBy는 SecurityContext에서 추출 (임시로 하드코딩)
         String approvedBy = "승인자@email.com";
 
-        // TODO: 허브/업체 존재 검증
-
         Info responseData = userService.approve(
                 new ApproveUserCommand(
                         userId,
@@ -110,4 +108,16 @@ public class UserController {
         );
         return CommonResponse.success(userId + "사용자를 승인했습니다.", responseData);
     }
+
+    @Operation(
+            summary = "사용자 가입 승인 (MASTER 전용)",
+            description = "가입 정보를 확인하고 사용자의 상태를 APPROVED로 변경합니다."
+    )
+    @GetMapping("/reject/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponse<String> rejectUser(@PathVariable UUID userId) {
+        userService.reject(userId);
+        return CommonResponse.success(userId + "사용자의 승인을 거절했습니다.");
+    }
+
 }

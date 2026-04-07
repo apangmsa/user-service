@@ -98,6 +98,14 @@ public class UserService {
         return UserResponse.from(user);
     }
 
+    @Transactional
+    public void reject(UUID userId) {
+        // 대상 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        user.reject();
+    }
+
     private boolean isDeliveryManagerRole(Role role) {
         return role == Role.HUB_DELIVERY_MANAGER || role == Role.COMPANY_DELIVERY_MANAGER;
     }
