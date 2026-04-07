@@ -15,11 +15,11 @@ public record UserDeletedPayload(
     public static UserDeletedPayload from(User user) {
         Integer deliverySequence = user.getDeliveryManager() == null
                 ? null
-                : user.getDeliveryManager().getDeliverySequence();
+                : user.getDeliveryManager().getSequence();
         return new UserDeletedPayload(
                 user.getId(),
                 user.getUsername(),
-                user.getUserRole().toString(),
+                user.getRole().toString(),
                 deliverySequence,
                 user.getDeletedAt(),
                 user.getDeletedBy()

@@ -24,18 +24,15 @@ public class UserService {
 
     @Transactional
     public UUID signUp(UserServiceDto.SignUp data) {
-        // hub 검증
-        hubProvider.get(data.getHubId());
-
-        UUID userId = identityProvider.register(data.getEmail(), data.getPassword());
+        UUID userId = identityProvider.register(data.email(), data.password());
         try {
             User user = User.create(
                     userId,
-                    data.getName(),
-                    data.getEmail(),
-                    data.getSlackId(),
-                    data.getRole(),
-                    data.getHubId()
+                    data.name(),
+                    data.email(),
+                    data.slackId(),
+                    data.requestedRole(),
+                    data.associateName()
             );
             return userRepository.save(user).getId();
         } catch (Exception e) {
@@ -48,17 +45,19 @@ public class UserService {
     @Transactional
     public void approve(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow();
+                .orElseThrow(UserNotFoundException::new);
 
         int sequence = rotationGenerator.next();
 
-        user.assignDeliverySequence(sequence);
+        // user.promoteToDeliveryManager(hubId, sequence);
     }
-
+/*
     @Transactional
     public void changePassword(UUID userId, String password) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
 
+        user.changePassword(password, roleCheck);
         identityProvider.changePassword(userId, password);
-    }
+    }*/
 }

@@ -2,12 +2,12 @@ package org.iimsa.userservice.domain.service.identity;
 
 import java.util.List;
 import java.util.UUID;
-import org.iimsa.userservice.domain.model.UserRole;
+import org.iimsa.userservice.domain.model.Role;
 
 public interface RoleCheck {
-    boolean hasRole(UserRole role);
+    boolean hasRole(Role role);
 
-    boolean hasRole(List<UserRole> types);
+    boolean hasRole(List<Role> types);
 
     boolean isMine(UUID id);
 }
