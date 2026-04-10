@@ -181,6 +181,8 @@ public class User extends BaseEntity {
         }
     }
 
+    // 배송기사 순번 할당
+
     private static void validateEmail(String email) {
         if (!StringUtils.hasText(email) || !email.matches(EMAIL_REGEX)) {
             throw new InvalidEmailException("이메일 형식이 올바르지 않습니다.");

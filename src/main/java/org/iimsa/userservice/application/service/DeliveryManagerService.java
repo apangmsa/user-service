@@ -2,8 +2,8 @@ package org.iimsa.userservice.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.iimsa.userservice.application.dto.query.UserQueryRepository;
 import org.iimsa.userservice.domain.model.User;
-import org.iimsa.userservice.domain.query.UserQueryRepository;
 import org.iimsa.userservice.domain.service.hubdeliverymanager.RoundRobinCounter;
 import org.iimsa.userservice.presentation.dto.DeliveryManagerSequenceResponse;
 import org.springframework.stereotype.Service;

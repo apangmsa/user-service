@@ -3,9 +3,9 @@ package org.iimsa.userservice.application.service;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.iimsa.userservice.application.dto.query.UserQueryDto;
+import org.iimsa.userservice.application.dto.query.UserQueryRepository;
 import org.iimsa.userservice.domain.exception.UserNotFoundException;
 import org.iimsa.userservice.domain.model.User;
-import org.iimsa.userservice.domain.query.UserQueryRepository;
 import org.iimsa.userservice.presentation.dto.UserResponse;
 import org.iimsa.userservice.presentation.dto.UserResponse.Info;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,7 @@ public class UserQueryService {
         return userQueryRepository.findAll(search, pageable)
                 .map(this::mapToInfoDto);
     }
-    
+
     // ======================Entity -> DTO 변환 메서드 (Mapper)=============================
 
     private UserResponse.Info mapToInfoDto(User user) {
