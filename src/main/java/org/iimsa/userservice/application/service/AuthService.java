@@ -1,11 +1,12 @@
 package org.iimsa.userservice.application.service;
 
-import org.iimsa.userservice.application.dto.AuthTokenResult;
+import org.iimsa.userservice.application.dto.TokenResult;
+import org.iimsa.userservice.application.dto.command.LoginCommand;
 
 public interface AuthService {
-    AuthTokenResult getToken(String email, String password);
+    TokenResult getToken(LoginCommand loginCommand);
 
-    AuthTokenResult refreshToken(String refreshToken);
+    TokenResult refreshToken(String refreshToken);
 
     void logout(String refreshToken);
 }
