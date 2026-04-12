@@ -16,9 +16,11 @@ import org.iimsa.userservice.application.service.AuthService;
 import org.iimsa.userservice.presentation.dto.RefreshTokenRequest;
 import org.iimsa.userservice.presentation.dto.TokenRequest;
 import org.iimsa.userservice.presentation.dto.TokenResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -63,5 +65,20 @@ public class AuthController {
         TokenResult result = authService.refreshToken(RefreshTokenCommand.from(request));
         return TokenResponse.from(result);
     }
+
+    @Operation(
+            summary = "로그아웃",
+            description = "리프레시 토큰을 무효화하여 인증 서버의 세션을 종료합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "500", description = "로그아웃 처리 실패")
+    })
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@RequestBody @Valid RefreshTokenRequest request) {
+        authService.logout(request.refreshToken());
+    }
+
 
 }
