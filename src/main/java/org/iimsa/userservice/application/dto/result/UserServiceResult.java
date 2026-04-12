@@ -1,0 +1,22 @@
+package org.iimsa.userservice.application.dto.result;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.iimsa.userservice.domain.model.Role;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UserServiceResult {
+
+    @Builder
+    public record SignUp(
+            String name,
+            String password,
+            String email,
+            String slackId,
+            Role requestedRole,
+            String associateName
+    ) {
+
+    }
+}

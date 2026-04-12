@@ -1,4 +1,4 @@
-package org.iimsa.userservice.domain.query;
+package org.iimsa.userservice.application.dto.query;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package org.iimsa.userservice.application;
+package org.iimsa.userservice.application.service;
 
 import org.iimsa.userservice.application.dto.AuthTokenResult;
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.iimsa.userservice.domain.model.Role;
 import org.iimsa.userservice.domain.model.Status;
+import org.iimsa.userservice.domain.model.User;
 
 /**
  * Info : 모든 정보 표시 (null 포함) 추후 조회 용도에 따라 DTO 분기 CompanyDeliveryInfo HubDeliveryInfo InfoToApprove
@@ -33,7 +34,7 @@ public class UserResponse {
         private String name;
         @Schema(description = "이메일")
         private String email;
-        @Schema(description = "슬랙 ID")
+        @Schema(description = "슬랙 ID (이메일 형식s)")
         private String slackId;
         @Schema(description = "사용자 희망 역할")
         private Role requestedRole;
@@ -49,5 +50,45 @@ public class UserResponse {
         private UUID companyId;
         @Schema(description = "배송 순번")
         private Integer deliverySequence;
+    }
+
+    public static UserResponse.Info from(User user) {
+        return Info.builder()
+                .id(user.getId())
+                .name(user.getUsername())
+                .email(user.getEmail())
+                .slackId(user.getSlackId())
+                .requestedRole(user.getRequestedRole())
+                .role(user.getRole())
+                .associateName(user.getAssociateName())
+                .status(user.getStatus())
+                .hubId(resolveHubId(user))
+                .companyId(resolveCompanyId(user))
+                .deliverySequence(resolveDeliverySequence(user))
+                .build();
+    }
+
+    private static UUID resolveHubId(User user) {
+        if (user.getHubManager() != null) {
+            return user.getHubManager().getHubId();
+        }
+        if (user.getDeliveryManager() != null) {
+            return user.getDeliveryManager().getHubId();
+        }
+        return null;
+    }
+
+    private static UUID resolveCompanyId(User user) {
+        if (user.getCompanyManager() != null) {
+            return user.getCompanyManager().getCompanyId();
+        }
+        return null;
+    }
+
+    private static Integer resolveDeliverySequence(User user) {
+        if (user.getDeliveryManager() != null) {
+            return user.getDeliveryManager().getSequence();
+        }
+        return null;
     }
 }

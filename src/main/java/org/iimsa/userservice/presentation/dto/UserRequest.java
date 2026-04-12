@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.iimsa.userservice.application.dto.UserServiceDto;
+import org.iimsa.userservice.application.dto.result.UserServiceResult;
 import org.iimsa.userservice.domain.model.Role;
 import org.iimsa.userservice.domain.model.User;
 
@@ -48,8 +48,8 @@ public class UserRequest {
         private String associateName;
 
         // 응용 계층으로 전달하기 위한 변환 메서드
-        public UserServiceDto.SignUp toDto() {
-            return new UserServiceDto.SignUp(
+        public UserServiceResult.SignUp toDto() {
+            return new UserServiceResult.SignUp(
                     name,
                     password,
                     email,
