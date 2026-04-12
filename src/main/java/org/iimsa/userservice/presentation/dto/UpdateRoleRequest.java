@@ -1,4 +1,4 @@
-package org.iimsa.userservice.presentation;
+package org.iimsa.userservice.presentation.dto;
 
 import java.util.UUID;
 import org.iimsa.userservice.domain.model.Role;

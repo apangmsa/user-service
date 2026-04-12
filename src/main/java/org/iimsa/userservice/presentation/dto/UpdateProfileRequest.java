@@ -1,4 +1,4 @@
-package org.iimsa.userservice.presentation;
+package org.iimsa.userservice.presentation.dto;
 
 public record UpdateProfileRequest(
         // 본인 수정 가능
