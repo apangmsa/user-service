@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 )
 public interface KeycloakClient {
     @PostMapping(path = "/realms/${keycloak.realm}/protocol/openid-connect/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    KeycloakTokenResponse getToken(Map<String, String> params); //TODO:
+    KeycloakTokenResponse getToken(Map<String, String> params);
 
     @PostMapping(path = "/realms/${keycloak.realm}/protocol/openid-connect/logout",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
