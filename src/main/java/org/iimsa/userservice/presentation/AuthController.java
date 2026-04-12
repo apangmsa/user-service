@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.userservice.application.dto.TokenResult;
-import org.iimsa.userservice.application.dto.command.RefreshTokenCommand;
 import org.iimsa.userservice.application.service.AuthService;
 import org.iimsa.userservice.presentation.dto.RefreshTokenRequest;
 import org.iimsa.userservice.presentation.dto.TokenRequest;
@@ -61,7 +60,7 @@ public class AuthController {
     @PostMapping("/refresh")
     public TokenResponse refresh(@RequestBody @Valid RefreshTokenRequest request) {
         log.info("인증 토큰 리프레시 요청: {}", request.refreshToken());
-        TokenResult result = authService.refreshToken(RefreshTokenCommand.from(request));
+        TokenResult result = authService.refreshToken(RefreshTokenRequest.toCommand(request));
         return TokenResponse.from(result);
     }
 

@@ -2,6 +2,7 @@ package org.iimsa.userservice.presentation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import org.iimsa.userservice.application.dto.command.RefreshTokenCommand;
 
 @Schema(description = "인증 토큰 갱신 요청 (Refresh Token)")
 public record RefreshTokenRequest(
@@ -13,4 +14,7 @@ public record RefreshTokenRequest(
         @NotBlank(message = "리프레시 토큰은 필수 입력 값입니다.")
         String refreshToken
 ) {
+    public static RefreshTokenCommand toCommand(RefreshTokenRequest request) {
+        return new RefreshTokenCommand(request.refreshToken());
+    }
 }
