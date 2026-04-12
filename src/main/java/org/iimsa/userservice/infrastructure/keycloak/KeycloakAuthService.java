@@ -38,7 +38,6 @@ public class KeycloakAuthService implements AuthService {
                     "scope", "openid"
             );
 
-            log.info("Keycloak 인증 시도 (Email: {})", loginCommand.email());
             log.info("login attempt (email: {}, hash: {})",
                     maskEmail(loginCommand.email()),
                     hashEmail(loginCommand.email())
