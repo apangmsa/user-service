@@ -3,6 +3,7 @@ package org.iimsa.userservice.presentation.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.iimsa.userservice.application.dto.command.LoginCommand;
 
 @Schema(description = "로그인 및 토큰 발급 요청")
 public record TokenRequest(
@@ -15,4 +16,10 @@ public record TokenRequest(
         @NotBlank(message = "비밀번호는 필수입력 값 입니다.")
         String password
 ) {
+    public static LoginCommand toCommand(TokenRequest request) {
+        return new LoginCommand(
+                request.email(),
+                request.password()
+        );
+    }
 }

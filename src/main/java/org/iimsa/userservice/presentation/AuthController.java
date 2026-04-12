@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.userservice.application.dto.TokenResult;
-import org.iimsa.userservice.application.dto.command.LoginCommand;
 import org.iimsa.userservice.application.dto.command.RefreshTokenCommand;
 import org.iimsa.userservice.application.service.AuthService;
 import org.iimsa.userservice.presentation.dto.RefreshTokenRequest;
@@ -47,7 +46,7 @@ public class AuthController {
     public TokenResponse token(@RequestBody @Valid TokenRequest request) {
         log.info("인증 토큰 발급 요청: {}", request.email());
         TokenResult tokenResult =
-                authService.getToken(LoginCommand.from(request));
+                authService.getToken(TokenRequest.toCommand(request));
         return TokenResponse.from(tokenResult);
     }
 
