@@ -2,6 +2,7 @@ package org.iimsa.userservice.presentation.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.iimsa.userservice.application.dto.TokenResult;
 
 @Schema(description = "발급된 인증 토큰 응답")
 public record TokenResponse(
@@ -20,4 +21,13 @@ public record TokenResponse(
         @Schema(description = "토큰 타입", example = "Bearer")
         String tokenType
 ) {
+    public static TokenResponse from(TokenResult result) {
+        return new TokenResponse(
+                result.accessToken(),
+                result.expiresIn(),
+                result.refreshExpiresIn(),
+                result.refreshToken(),
+                result.tokenType()
+        );
+    }
 }
