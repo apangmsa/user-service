@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.iimsa.userservice.application.dto.TokenResult;
 import org.iimsa.userservice.application.dto.command.LoginCommand;
+import org.iimsa.userservice.application.dto.command.RefreshTokenCommand;
 import org.iimsa.userservice.application.service.AuthService;
+import org.iimsa.userservice.presentation.dto.RefreshTokenRequest;
 import org.iimsa.userservice.presentation.dto.TokenRequest;
 import org.iimsa.userservice.presentation.dto.TokenResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +47,21 @@ public class AuthController {
         TokenResult tokenResult =
                 authService.getToken(LoginCommand.from(request));
         return TokenResponse.from(tokenResult);
+    }
+
+    @Operation(
+            summary = "인증 토큰 갱신",
+            description = "만료된 Access 토큰을 대신하여 Refresh 토큰으로 새로운 토큰 세트를 발급받습니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "갱신 성공"),
+            @ApiResponse(responseCode = "401", description = "리프레시 토큰 유효하지 않음 (재로그인 필요)")
+    })
+    @PostMapping("/refresh")
+    public TokenResponse refresh(@RequestBody @Valid RefreshTokenRequest request) {
+        log.info("인증 토큰 리프레시 요청: {}", request.refreshToken());
+        TokenResult result = authService.refreshToken(RefreshTokenCommand.from(request));
+        return TokenResponse.from(result);
     }
 
 }

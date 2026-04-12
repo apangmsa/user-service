@@ -17,6 +17,8 @@ import org.iimsa.userservice.application.service.UserQueryService;
 import org.iimsa.userservice.application.service.UserService;
 import org.iimsa.userservice.presentation.dto.ApproveRequest;
 import org.iimsa.userservice.presentation.dto.DeliveryManagerSequenceResponse;
+import org.iimsa.userservice.presentation.dto.UpdateProfileRequest;
+import org.iimsa.userservice.presentation.dto.UpdateRoleRequest;
 import org.iimsa.userservice.presentation.dto.UserRequest;
 import org.iimsa.userservice.presentation.dto.UserResponse.Info;
 import org.iimsa.userservice.presentation.dto.UserResponse.SignUp;

@@ -7,6 +7,7 @@ import org.iimsa.common.exception.InternalServerException;
 import org.iimsa.common.exception.UnAuthorizedException;
 import org.iimsa.userservice.application.dto.TokenResult;
 import org.iimsa.userservice.application.dto.command.LoginCommand;
+import org.iimsa.userservice.application.dto.command.RefreshTokenCommand;
 import org.iimsa.userservice.application.service.AuthService;
 import org.iimsa.userservice.infrastructure.keycloak.client.KeycloakClient;
 import org.iimsa.userservice.infrastructure.keycloak.client.dto.KeycloakTokenResponse;
@@ -43,13 +44,13 @@ public class KeycloakAuthService implements AuthService {
     }
 
     @Override
-    public TokenResult refreshToken(String refreshToken) {
+    public TokenResult refreshToken(RefreshTokenCommand refreshTokenCommand) {
         try {
-            Map<String, String> params = Map.of(
+            Map<String, String> params = Map.<String, String>of(
                     "grant_type", "refresh_token",
                     "client_id", properties.clientId(),
                     "client_secret", properties.clientSecret(),
-                    "refresh_token", refreshToken
+                    "refresh_token", refreshTokenCommand.refreshToken()
             );
 
             log.info("Keycloak 토큰 갱신 시도");
